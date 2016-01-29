@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>增加商品</title>
+	<script type="text/javascript" src="/javascripts/jquery-1.11.2.min.js"></script>
+	<script type="text/javascript" src="/javascripts/avalon-1.40.min.js"></script>
+	<link rel="stylesheet" href="/stylesheets/bootstrap.min.css">
+	<link rel="stylesheet" href="/stylesheets/addcommodity.css">
+	<link rel="stylesheet" type="text/css" href="/stylesheets/common.css">
+</head>
+<body>
+	<iframe name="newWindow" id="newWindow" style="display:none;"></iframe>
+	<div class="wrap">
+		<div class="header">
+			<div class="header-content">
+				<h1>XX购物平台</h1>
+				<div class="headerNav"><p class="name"><span style="color:white;">你好,<%=name%></span></p><p class="nav"><span><a href="/users">商品首页</a></span><span><a href="/users/addcommodity">增加商品</a></span><span><a href="/users/carts">购物车</a></span><span><a href="/logout">退出</a></span></p></div>
+				<div style="clear:both;"></div>
+			</div>
+		</div>
+		<div class="content">
+			<form class="form-horizontal addCom" style="width:400px;margin:0 auto;margin-top:10px;">
+			  <div class="form-group">
+			    <label for="cName" class="col-sm-3 control-label">商品名称</label>
+			    <div class="col-sm-9">
+			      <input type="text" class="form-control" id="cName" placeholder="商品名称" name="cName">
+			    </div>
+			  </div>
+			  <div class="form-group">
+			    <label for="cPrice" class="col-sm-3 control-label">商品价格</label>
+			    <div class="col-sm-9">
+			      <input type="text" class="form-control" id="cPrice" placeholder="商品价格" name="cPrice">
+			    </div>
+			  </div>
+			  <input type="text" class="cImgSrc" name="cImgSrc" style="display:none;">
+			</form>
+			<div class="upload">
+			  	<form class="form-horizontal" id="myForm" style="width:400px;margin:0 auto;margin-top:10px;" action="/users/addcommodity/uploadpic" method="POST" enctype="multipart/form-data" target="newWindow">
+			  	<div class="form-group">
+				    <label for="cPrice" class="col-sm-3 control-label">商品图片</label>
+				    <div class="col-sm-9">
+				    	<div class="upload-img">
+				    		<input type="file" name="file" class="inputFile">
+				    	</div>
+				    	<p>请选择图片</p>
+				    </div>
+				</div>
+				<div class="form-group">
+				    <label class="col-sm-3 control-label"></label>
+				    <div class="col-sm-9">
+				    	<button class="btn btn-primary submit" style="width:100%;">增加商品</button>
+				    </div>
+				</div>
+			    </form>
+			</div>
+		</div>
+	</div>
+	<script>
+	$('.inputFile').change(function() {
+		console.log($('#myForm'));
+		$('#myForm').submit();
+		$('#newWindow').load(function() {
+			var str = $('#newWindow').contents().find('body').find('pre').html();
+			var str = $.parseJSON(str);
+			if (str.status == 0) {
+				console.log(1);
+				$('#newWindow').empty().remove();
+				var newWindow = '<iframe name="newWindow" id="newWindow" style="display:none;"></iframe>';
+				$("body").append(newWindow);
+				$('.cImgSrc').val(str.body);
+				$('.upload-img').css('backgroundImage', 'url(../' + str.body + ')')
+			} else {
+				alert('上传失败');
+			}
+		})
+	})
+
+
+	$('.submit').click(function() {
+		if ($('#cName').val() && $('#cPrice').val() && $('.cImgSrc').val()) {
+			var cInfo = {
+				cName: $('#cName').val(),
+				cPrice: parseInt($('#cPrice').val()),
+				cImgSrc: $('.cImgSrc').val()
+			}
+			$.ajax({
+				url: '/users/addcommodity',
+				type: 'POST',
+				dataType: 'json',
+				data: JSON.stringify(cInfo),
+				contentType: "application/json",
+				success: function(data) {
+					console.log(data);
+					if (data.status == 0) {
+						location.href = '/users';
+					} else {
+						alert(data.mes);
+					}
+				}
+			})
+		} else {
+			alert('信息不完全！');
+		}
+
+	})
+	</script>
+</body>
+</html>

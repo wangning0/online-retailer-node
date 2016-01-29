@@ -1,0 +1,15 @@
+table td{
+	text-align: center;
+	height: 160px;
+	line-height: 160px !important;
+}
+th{
+	text-align: center;
+	vertical-align: middle;
+}
+.quality{
+	width: 50px;
+	padding: 2px;
+	line-height: 21px !important;
+	border-radius: 3px;
+}

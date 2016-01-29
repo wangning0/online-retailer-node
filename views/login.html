@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>登录</title>
+	<link rel="stylesheet" href="/stylesheets/bootstrap.min.css">
+	<script src="/javascripts/jquery-1.11.2.min.js"></script>
+	<style>
+		*{
+			margin: 0px;
+			padding: 0px;
+		}
+		.wrap{
+			width: 800px;
+			margin: 200px auto;
+		}
+	</style>
+</head>
+<body>
+<div class="wrap">
+	<h1 style="text-align:center;">登录</h1>
+	<form class="form-horizontal" style="width:400px;margin:0 auto;margin-top:10px;" onSubmit="return false;">
+	  <div class="form-group">
+	    <label for="name" class="col-sm-2 control-label">Name</label>
+	    <div class="col-sm-10">
+	      <input type="text" class="form-control" id="name" placeholder="Name" name="name">
+	    </div>
+	  </div>
+	  <div class="form-group">
+	    <label for="password" class="col-sm-2 control-label">Password</label>
+	    <div class="col-sm-10">
+	      <input type="password" class="form-control" id="password" placeholder="Password" name="password">
+	    </div>
+	  </div>
+	  <div class="form-group">
+	    <div  class="col-sm-2 control-label"></div>
+	  	<div class="col-sm-10">
+	  		<button class="btn btn-primary submit" style="float:left">登录</button>
+	  		<a href="/register" class="btn btn-primary" style="float:right">注册</a>
+	  	</div>
+	  </div>
+	</form>
+</div>
+<script>
+	$('.submit').click(function(){
+		var data = {
+			name:$('#name').val(),
+			password:$('#password').val()
+		};
+		$.ajax({
+			url:'/login',
+			data:JSON.stringify(data),
+			contentType:"application/json",
+			type:'POST',
+			dataType:'json',
+			success:function(data){
+				if( data.status == 0 ){
+					location.href = '/users';
+				} else {
+					alert(data.mes);
+				}
+			},
+			error:function(err){
+				console.log(err);
+			}
+		})
+	})
+</script>
+</body>
+</html>

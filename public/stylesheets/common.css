@@ -1,0 +1,39 @@
+*{
+	margin: 0px;
+	padding: 0px;
+}
+.wrap{
+	width: 1000px;
+	margin: 0px auto;
+}
+.header {
+	padding: 10px;
+	background-color: rgba(29, 29, 134, 0.46);
+	border-bottom: 1px dashed black;
+}
+.header-content h1{
+	font-size: 30px;
+	text-align: center;
+	font-weight: bold;
+	font-family: Helvetica;
+}
+.header-content a{
+	color: white;
+	text-decoration: none;
+}
+
+.header-content a:hover{
+	color: red;
+}
+.name{
+	float: left;
+}
+.nav{
+	float: right;
+}
+.nav span{
+	margin-right: 10px;
+}
+.content{
+	padding: 20px;
+}

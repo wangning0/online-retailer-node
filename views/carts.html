@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>购物车</title>
+	<script type="text/javascript" src="/javascripts/jquery-1.11.2.min.js"></script>
+	<script type="text/javascript" src="/javascripts/avalon-1.40.min.js"></script>
+	<link rel="stylesheet" href="/stylesheets/bootstrap.min.css">
+	<link rel="stylesheet" href="/stylesheets/carts.css">
+	<link rel="stylesheet" href="/stylesheets/common.css">
+</head>
+<body>
+	<div class="wrap">
+		<div class="header">
+			<div class="header-content">
+				<h1>XX购物平台</h1>
+				<div class="headerNav"><p class="name"><span style="color:white;">你好,<%=name%></span></p><p class="nav"><span><a href="/users">商品首页</a></span><span><a href="/users/addcommodity">增加商品</a></span><span><a href="/users/carts">购物车</a></span><span><a href="/logout">退出</a></span></p></div>
+				<div style="clear:both;"></div>
+			</div>
+		</div>
+		<div class="content ms-controller" ms-controller="carts">
+				<div class="content-body">
+					<table class="table">
+						<thead>
+							<th>商品名称</th>
+							<th>商品图片</th>
+							<th>商品价格</th>
+							<th>商品数量</th>	
+							<th><input type="checkbox" class="allChoose">全选</th>
+							<th>删除商品</th>	
+						</thead>
+						<tbody>
+							<tr ms-repeat="castList">
+								<td>{{el.cName}}</td>
+								<td><img ms-src={{el.cImgSrc}} style="width:100px;height:150px;"></td>
+								<td>{{el.cPrice}}</td>
+								<td><button style="margin-right:3px;" class="btn btn-sm btn-primary" ms-click="addQuality()">+</button><input type="text" class="quality" ms-attr-value={{el.cQuality}}><button class="btn-sm btn btn-primary" style="margin-left:3px;" ms-click="cutQuality()">-</button></td>
+								<td><input type="checkbox" ms-attr-price={{el.cPrice}} ms-attr-quality={{el.cQuality}} class="singleCheck" ms-click="singleChange()" ms-attr-cid={{el.cId}}></td>
+								<td><button class="btn btn-danger" ms-attr-cid={{el.cId}} ms-click="deleteCom()">删除</button></td>	
+							</tr>
+						</tbody>
+					</table>
+					<table class="table">
+						<tbody>
+							<tr>
+								<td style="font-size:30px;color:red;">总价</td>
+								<td style="font-size:30px;color:red;" class="allCount">¥0</td>
+								<td><button class="btn btn-primary" ms-click="clear()">结算</button></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+		</div>
+	</div>
+	<script>
+	var carts = avalon.define({
+		$id:"carts",
+		castList: [],
+		addQuality:function(){
+			var val = parseInt($(this).siblings('.quality').val()) + 1;
+			$(this).siblings('.quality').val(val)
+			var h = $(this).parent().parent().find('input[type="checkbox"]');
+			$(h).attr('quality',val);
+			carts.count();
+		},
+		cutQuality:function(){
+			var val = parseInt($(this).siblings('.quality').val()) - 1;
+			if( val == -1 ){
+				alert('商品数不能为负！');
+			} else {
+				$(this).siblings('.quality').val(val)
+				var h = $(this).parent().parent().find('input[type="checkbox"]');
+				$(h).attr('quality',val);
+				carts.count();
+			}
+		},
+		count:function(){
+			var sum = 0;
+			if( $('.singleCheck:checked').length == 0 ){
+				sum = 0;
+				$('.allCount').html('¥'+sum);
+			}
+			$('.singleCheck:checked').each(function(index,val){
+				sum += parseInt($(val).attr('quality'))*parseInt($(val).attr('price'))
+				$('.allCount').html('¥'+sum);
+			})
+		},
+		singleChange:function(){	
+			if($('.singleCheck:not(:checked)').length == 0){
+				$('.allChoose').prop('checked',true);
+			} else {
+				$('.allChoose').prop('checked',false);
+			}
+				carts.count();
+		},
+		clear:function(){
+			alert('共'+$('.allCount').html());
+			$('.singleCheck:checked').each(function(index,value){
+				var cId = $(value).attr('cid');
+				var cQuality = $(value).attr('quality');
+				var data = {
+					cId:cId,
+					cQuality:parseInt(cQuality)
+				}
+				$.ajax({
+					url:'/users/clear',
+					data:JSON.stringify(data),
+					dataType:'json',
+					type:'POST',
+					contentType:"application/json",
+					success:function(data){
+						if( data.status == 0 ){
+							location.href = '/users';
+						}
+					}
+				})
+			});
+		},
+		deleteCom:function(){
+			var cId = $(this).attr('cid');
+			$.ajax({
+					url:'/users/delete?cid='+cId,
+					type:'GET',
+					success:function(data){
+						if( data.status == 0 ){
+							alert('删除成功!');
+							location.reload();
+						} else {
+							alert('删除失败!');
+						}
+					}
+				})
+		}
+	})
+	$(function() {
+		$.getJSON('/users/getCarts').done(function(data) {
+			if(data.status == 0){
+				var arr = data.body;
+				arr.forEach(function(value){
+					value.cImgSrc = '../'+value.cImgSrc;
+				});
+				carts.castList = arr;
+			} else {
+				alert(data.mes);
+			}
+		})
+		$('.allChoose').click(function(){
+			var check = $(this).prop('checked');
+			$('.singleCheck').each(function(index,val){
+				$(val).prop('checked',check);
+			})
+			carts.count();
+		});
+	})
+	</script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+.content{
+	background: rgba(29, 29, 134, 0.46);
+	height: 600px;
+}
+.inputFile{
+	opacity: 0;
+	width: 100%;
+	height: 300px;
+}
+.upload-img{
+	border: 1px dashed white;
+	position: relative;
+	border-radius: 10px; 
+	background-size: 290px 300px;
+}
+.upload p{
+	position: absolute;
+	left: 40%;
+	top: 40%;
+}

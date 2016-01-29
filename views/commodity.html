@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>商品主页</title>
+	<script type="text/javascript" src="/javascripts/jquery-1.11.2.min.js"></script>
+	<script type="text/javascript" src="/javascripts/avalon-1.40.min.js"></script>
+	<link rel="stylesheet" href="/stylesheets/bootstrap.min.css">
+	<link rel="stylesheet" href="/stylesheets/commodity.css">
+	<link rel="stylesheet" href="/stylesheets/common.css">
+</head>
+<body>
+	<div class="wrap">
+		<div class="header">
+			<div class="header-content">
+				<h1>XX购物平台</h1>
+				<div class="headerNav"><p class="name"><span style="color:white;">你好,<%=name%></span></p><p class="nav"><span><a href="/users">商品首页</a></span><span><a href="/users/addcommodity">增加商品</a></span><span><a href="/users/carts">购物车</a></span><span><a href="/logout">退出</a></span></p></div>
+				<div style="clear:both;"></div>
+			</div>
+		</div>
+		<div class="content ms-controller" ms-controller="commodities">
+				<div class="content-body">
+					<div class="commodity" ms-repeat="commodity">
+						<p><img ms-src={{el.cImgSrc}}></p>
+
+						<div class="commodityDetial">
+							<p style="color:red;">¥{{el.cPrice}}</p>
+							<p>{{el.cName}}</p>
+							<p><button ms-attr-cid={{el._id}} class="btn btn-primary addComToCarts" ms-click="addComToCarts()">加入购物车</button></p>
+						</div>
+					</div>
+				</div>
+			</div>
+	</div>
+	<script>
+	/*$(function(){
+			function getUrlParam(name) {
+				var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+				var r = window.location.search.substr(1).match(reg); //匹配目标参数
+				if (r != null) return unescape(r[2]);
+				return null; //返回参数值
+			}
+			var id = getUrlParam('id');
+			$.ajax({
+				url:'/users/commodity?id='+id,
+				type:'GET',
+				success:function(data){
+					console.log(data);
+				}
+			})
+		})*/
+	var commodities = avalon.define({
+		$id:"commodities",
+		addComToCarts:function(){
+			var cid = $(this).attr('cid');
+			console.log($(this).attr('cid'));
+			$.ajax({
+				url:'/users/addCommodityToCarts?cid='+cid,
+				type:'GET',
+				success:function(data){
+					if(data.status == 0){
+						alert('添加成功!');
+					} else {
+						alert(data.mes);
+					}
+				}
+			})
+		},
+		commodity:[
+			/*{cImgSrc:"avator/1453990527087aa.png",
+			cPrice:600,
+			cName:'iphone6'
+		},{cImgSrc:"/images/xmsz-1.jpg",
+			cPrice:600,
+			cName:'iphone6'
+		},{cImgSrc:"/images/xmsz-1.jpg",
+			cPrice:600,
+			cName:'iphone6'
+		},{cImgSrc:"/images/xmsz-1.jpg",
+			cPrice:600,
+			cName:'iphone6'
+		},{cImgSrc:"/images/xmsz-1.jpg",
+			cPrice:600,
+			cName:'iphone6'
+		},{cImgSrc:"/images/xmsz-1.jpg",
+			cPrice:600,
+			cName:'iphone6'
+		},{cImgSrc:"/images/xmsz-1.jpg",
+			cPrice:600,
+			cName:'iphone6'
+		},{cImgSrc:"/images/xmsz-1.jpg",
+			cPrice:600,
+			cName:'iphone6'
+		},{cImgSrc:"/images/xmsz-1.jpg",
+			cPrice:600,
+			cName:'iphone6'
+		},{cImgSrc:"/images/xmsz-1.jpg",
+			cPrice:600,
+			cName:'iphone6'
+		}*/
+		]
+	})
+	$(function() {
+		$.getJSON('/users/commodity').done(function(data) {
+			if (data.status == 0 && data.body.length == 0) {
+				/*alert('无商品,请先添加商品!');*/
+			} else if(data.status == 0 && data.body.length != 0){
+				commodities.commodity = data.body;
+			}
+		})
+		
+	})
+	</script>
+</body>
+</html>

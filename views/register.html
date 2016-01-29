@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>登录</title>
+	<link rel="stylesheet" href="/stylesheets/bootstrap.min.css">
+	<script src="/javascripts/jquery-1.11.2.min.js"></script>
+	<style>
+		*{
+			margin: 0px;
+			padding: 0px;
+		}
+		.wrap{
+			width: 800px;
+			margin: 200px auto;
+		}
+	</style>
+</head>
+<body>
+<div class="wrap">
+	<h1 style="text-align:center;">注册</h1>
+	<form class="form-horizontal" style="width:400px;margin:0 auto;margin-top:10px;" onSubmit="return false;">
+	  <div class="form-group">
+	    <label for="name" class="col-sm-3 control-label">Name</label>
+	    <div class="col-sm-9">
+	      <input type="text" class="form-control" id="name" placeholder="Name" name="name">
+	    </div>
+	  </div>
+	  <div class="form-group">
+	    <label for="password" class="col-sm-3 control-label">Password</label>
+	    <div class="col-sm-9">
+	      <input type="password" class="form-control" id="password" placeholder="Password" name="password">
+	    </div>
+	  </div>
+	  <div class="form-group">
+	    <label for="password" class="col-sm-3 control-label">RePassword</label>
+	    <div class="col-sm-9">
+	      <input type="password" class="form-control" id="RePassword" placeholder="RePassword" name="repassword">
+	    </div>
+	  </div>
+	  <div class="form-group">
+	    <div  class="col-sm-3 control-label"></div>
+	  	<div class="col-sm-9">
+	  		<button class="btn btn-primary sub" style="width:100%;">注册</button>
+	  	</div>
+	  </div>
+	</form>
+</div>
+<script>
+	$('.sub').click(function() {
+		if ($('#password').val() == $('#RePassword').val()) {
+			var data = {
+				name: $('#name').val(),
+				password: $('#password').val()
+			};
+			$.ajax({
+				url: '/register',
+				data: JSON.stringify(data),
+				type: 'POST',
+				contentType:"application/json",
+				dataType: 'json',
+				success: function(data) {
+					alert(data.mes);
+					if( data.status == 0 ){
+						location.href = "login";
+					} else {
+						$('#password').val("");
+						$('#RePassword').val("");
+						$('#name').val("");
+					}
+				},
+				error: function(err) {
+					console.log(err);
+				}
+			})
+		} else {
+			alert('两次密码输入不一致,请重新输入!');
+			$('#password').val("");
+			$('#RePassword').val("");
+		}
+
+	})
+</script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+.commodity{
+	width: 192px;
+	height: 350px;
+	float: left;
+}
+.content-body img{
+	text-align: center;
+	width: 170px;
+	height: 230px;
+}
+.commodity p{
+	text-align: center;
+}
+.ms-controller{
+	display: none;
+}
